@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Amandine Project</title>
+
+    <!-- Link to a stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Story Topics</h1>
+    </header>
+
+    <main>
+        <div id="app">
+            <div class="preview-row" v-if="items && items.length">
+                <img 
+                    v-for="(it, i) in items" 
+                    :key="i" 
+                    :src="it.image" 
+                    :alt="it.title" 
+                    class="preview-thumb" 
+                    :class="{ active: index === i }"
+                    @click="selectItem(i)"
+                >
+            </div>
+
+            <div class="buttons">
+                <button @click="prevItem">Previous</button>
+                <button @click="nextItem">Next</button>
+            </div>
+
+            
+            <div v-if="items && items.length" id="books">
+                <!-- always show title -->
+                <h2>{{ current.title }}</h2>
+
+                <!-- content row: image beside description -->
+                <div class="content-row">
+                    <img :src="current.image" :alt="current.title" id="cover-image">
+
+                    <!-- description always shown -->
+                    <div class="text-column">
+                        <p class="description">
+                            {{ current.description }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button @click="prevItem">Previous</button>
+                <button @click="nextItem">Next</button>
+            </div>
+        </div>
+
+
+    </main>
+
+    <footer>
+    </footer>
+
+
+    <!-- Include Vue.js and JavaScript file -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="data/info.js"></script>
+
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    items: topics,   // from data/info.js
+                    index: 0,        // start with first item
+                    showTitle: true  // toggle control
+                };
+            },
+
+            computed: {
+                current() {
+                    return this.items && this.items[this.index] ? this.items[this.index] : { title: '', description: '', image: '' };
+                }
+            },
+
+            methods: {
+            // Move to next topic
+                nextItem() {
+                    this.index = (this.index + 1) % this.items.length;
+                },
+
+                // Move to previous topic
+                prevItem() {
+                    this.index = (this.index - 1 + this.items.length) % this.items.length;
+                },
+
+                // select a specific item from preview
+                selectItem(i) {
+                    this.index = i;
+                }
+            },
+
+            mounted() {
+                console.log('topics loaded:', this.items);
+            }
+
+        });
+
+        // 🔹 Mount Vue app to #app div
+        app.mount('#app');
+    </script>
+</body>
+</html>
